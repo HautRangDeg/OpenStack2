@@ -1,0 +1,25 @@
+name: Déploiement Reverse Proxy
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-infra:
+    runs-on: self-hosted
+  steps:
+    - uses: actions/checkout@v4
+    - name: Déploiement des serveurs Web
+      run: |
+        ./scripts/deploy_vm.sh web1
+        ./scripts/deploy_vm.sh web2
+        ./scripts/deploy_vm.sh web3
+    - name: Déploiement du reverse proxy
+      run: |
+        ./scripts/deploy_vm.sh reverse-proxy
+    - name: Installation Nginx sur serveurs Web
+      run: |
+        for ip in ${{ secrets.WEB1_IP }} ${{ secrets.WEB2_IP }} ${{ secrets.WEB3_IP }}; do ssh ubuntu@$ip 'bash -s' < scripts/install_nginx.sh
+        done
+    - name: Configuration du reverse proxy
+      run: |
+        scp reverse-proxy/nginx.conf ubuntu@${{ secrets.PROXY_IP }}:/tmp/nginx.conf
+        ssh ubuntu@${{ secrets.PROXY_IP }} 'sudo mv /tmp/nginx.conf /etc/nginx/nginx.conf && sudo systemctl restart nginx'
