@@ -31,6 +31,6 @@ jobs:
       - name: Installation Nginx sur serveurs Web
         run: |
           FLOATING_IP=$(yq -r .vm.floating_ip intent.yaml)
-          ping $FLOATING_IP
+          ping -c 4 $FLOATING_IP
           ssh-keygen -R "$FLOATING_IP"
           ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \ -i ~/.ssh/ostack fred@$FLOATING_IP 'bash -s' < scripts/install_nginx.sh
