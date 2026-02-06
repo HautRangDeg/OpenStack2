@@ -30,4 +30,4 @@ jobs:
  
       - name: Installation Nginx sur serveurs Web
         run: |
-          ssh -i ~/.ssh/ostack fred@{{ needs.deploy-infra.outputs.vm_ip }} 'bash -s' < scripts/install_nginx.sh
+          ssh -i ~/.ssh/ostack fred@${{ steps.deploy.outputs.vm_ip }} 'bash -s' < scripts/install_nginx.sh

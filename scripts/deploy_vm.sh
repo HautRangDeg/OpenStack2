@@ -35,7 +35,7 @@ openstack server create  "$VM_NAME" \
 # Attente que la VM soit active et récupération de l'IP
 echo "Attente que la VM $VM_NAME passe en statut ACTIVE..."
 
-MAX_RETRIES=40
+MAX_RETRIES=12
 SLEEP_SECONDS=3
 
 for i in $(seq 1 $MAX_RETRIES);do 
