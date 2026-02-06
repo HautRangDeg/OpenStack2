@@ -13,6 +13,7 @@ FLAVOR="srv"
 NETWORK="LAN-LABO"
 USER_DATA="/var/snap/microstack/common/var/user-init.yaml"
 CONFIG_DRIVE="true"
+FLOATING_IP="10.20.20.144"
 
 shopt -s expand_aliases
 alias openstack='sudo microstack.openstack'
@@ -35,7 +36,7 @@ openstack server create  "$VM_NAME" \
 # Attente que la VM soit active et récupération de l'IP
 echo "Attente que la VM $VM_NAME passe en statut ACTIVE..."
 
-MAX_RETRIES=12
+MAX_RETRIES=40
 SLEEP_SECONDS=3
 
 for i in $(seq 1 $MAX_RETRIES);do 
@@ -62,8 +63,13 @@ if [ "$STATUS" != "ACTIVE" ]; then
 fi
 
 
-#openstack server wait "$VM_NAME"
 IP=$(openstack server show "$VM_NAME" -f json \ | jq -r '.addresses '| cut -d= -f2)
-echo "La VM $VM_NAME est déployée avec IP : $IP"
+echo "La VM $VM_NAME est déployée avec IP interne: $IP"
 
-echo "ip=$IP" >> "$GITHUB_OUTPUT"
+#Rattacher la floating IP d'exploitation
+openstack server add floating ip "$VM_NAME" "$FLOATING_IP"
+
+IP=$(openstack server show "$VM_NAME" -f json \ | jq -r '.addresses '| cut -d= -f2)
+echo "La VM $VM_NAME est déployée avec les IP : $IP"
+
+echo "ip=$FLOATING_IP" >> "$GITHUB_OUTPUT"
