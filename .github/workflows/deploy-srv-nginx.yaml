@@ -17,6 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Rendre le script exécutable 
+        run: chmod +x scripts/deploy_vm.sh
+
      
       - name: Déploiement du serveur Nginx
         id: deploy
