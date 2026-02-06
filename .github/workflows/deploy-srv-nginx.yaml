@@ -17,6 +17,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Installer yq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y yq
+
+
       - name: Déploiement du serveur Nginx
         id: deploy
         run: |
