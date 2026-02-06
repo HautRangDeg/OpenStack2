@@ -13,15 +13,17 @@ jobs:
       - os2
     outputs:
       vm_ip: ${{ steps.deploy.outputs.ip }}
-  steps:
-    - uses: actions/checkout@v4
+    
+    steps:
+      - uses: actions/checkout@v4
 
-    - name: Déploiement du serveur Nginx
-      run: |
-        VM_NAME=$(yq '.vm.name' intent.yaml)
-        ./scripts/deploy_vm.sh $VM_NAME
+      - name: Déploiement du serveur Nginx
+        id: deploy
+        run: |
+          VM_NAME=$(yq '.vm.name' intent.yaml)
+          ./scripts/deploy_vm.sh $VM_NAME
 
  
-    - name: Installation Nginx sur serveurs Web
-      run: |
-        ssh -i ~/.ssh/ostack fred@{{ needs.deploy-infra.outputs.vm_ip }} 'bash -s' < scripts/install_nginx.sh
+      - name: Installation Nginx sur serveurs Web
+        run: |
+          ssh -i ~/.ssh/ostack fred@{{ needs.deploy-infra.outputs.vm_ip }} 'bash -s' < scripts/install_nginx.sh
