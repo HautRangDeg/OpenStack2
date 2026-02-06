@@ -24,10 +24,11 @@ jobs:
       - name: Déploiement du serveur Nginx
         id: deploy
         run: |
-          VM_NAME=$(yq '.vm.name' intent.yaml)
+          VM_NAME=$(yq .vm.name intent.yaml)
           ./scripts/deploy_vm.sh $VM_NAME
 
  
       - name: Installation Nginx sur serveurs Web
         run: |
-          ssh -i ~/.ssh/ostack fred@${{ steps.deploy.outputs.vm_ip }} 'bash -s' < scripts/install_nginx.sh
+          FLOATING_IP=$(yq .vm.floating_ip intent.yaml)
+          ssh -i ~/.ssh/ostack fred@$FLOATING_IP 'bash -s' < scripts/install_nginx.sh

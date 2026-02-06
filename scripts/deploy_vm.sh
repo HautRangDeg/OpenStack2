@@ -36,7 +36,7 @@ openstack server create  "$VM_NAME" \
 # Attente que la VM soit active et récupération de l'IP
 echo "Attente que la VM $VM_NAME passe en statut ACTIVE..."
 
-MAX_RETRIES=40
+MAX_RETRIES=12
 SLEEP_SECONDS=3
 
 for i in $(seq 1 $MAX_RETRIES);do 
@@ -69,7 +69,7 @@ echo "La VM $VM_NAME est déployée avec IP interne: $IP"
 #Rattacher la floating IP d'exploitation
 openstack server add floating ip "$VM_NAME" "$FLOATING_IP"
 
-IP=$(openstack server show "$VM_NAME" -f json \ | jq -r '.addresses '| cut -d= -f2)
-echo "La VM $VM_NAME est déployée avec les IP : $IP"
+allIP=$(openstack server show "$VM_NAME" -f json \ | jq -r '.addresses '| cut -d= -f2)
+echo "La VM $VM_NAME est déployée avec les IP : $allIP"
 
 echo "ip=$FLOATING_IP" >> "$GITHUB_OUTPUT"
