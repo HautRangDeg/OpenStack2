@@ -1,6 +1,8 @@
-name: Déploiement Reverse Proxy
+name: Déploiement Serveur Web Nginx
+
 on:
-  workflow_dispatch:
+  push:
+    branches: [ main ]
 
 jobs:
   deploy-infra:
